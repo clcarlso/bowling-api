@@ -1,17 +1,13 @@
-package com.BowlingGameJava.bowlinggamejava;
+package SB.IT.FP.bowlingapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
 @SpringBootTest
-class BowlingGameJavaApplicationTests{
+class BowlingApiApplicationTests {
 
 	@Test
 	void contextLoads() {
 	}
-
-
-	
 
 }

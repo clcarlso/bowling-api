@@ -1,13 +1,13 @@
-package com.BowlingGameJava.bowlinggamejava;
+package SB.IT.FP.bowlingapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BowlingGameJavaApplication {
+public class BowlingApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BowlingGameJavaApplication.class, args);
+		SpringApplication.run(BowlingApiApplication.class, args);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.BowlingGameJava.bowlinggamejava.Game;
+package SB.IT.FP.bowlingapi.Game;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
