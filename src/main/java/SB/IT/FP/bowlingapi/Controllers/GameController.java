@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import SB.IT.FP.bowlingapi.Exceptions.PinsAboveBoundException;
 import SB.IT.FP.bowlingapi.Exceptions.PinsBelowBoundException;
 import SB.IT.FP.bowlingapi.Game.Game;
-import org.apache.logging.log4j.*;;
+import org.apache.logging.log4j.*;
 
 @RestController
 public class GameController {
