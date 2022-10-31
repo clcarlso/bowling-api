@@ -76,6 +76,7 @@ public class GameTest  {
             game.roll(999);
         } catch (PinsAboveBoundException e) {
             assertEquals(e.getMessage(),PinsExceptionError);
+            //assertThrows
         }
         assertEquals(0, game.score());
     }
