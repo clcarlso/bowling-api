@@ -1,5 +1,6 @@
 package SB.IT.FP.bowlingapi.Controllers;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,16 +17,17 @@ public class GameController {
     
 
     @GetMapping("/score")
+    @CrossOrigin(origins = {"http://localhost:4200"})
     String getScore(){
         return "The current score of the game is: " + game.score();
     }
 
     @GetMapping("/roll/{pins}")
+    @CrossOrigin(origins = {"http://localhost:4200"})
     String rollPin(@PathVariable int pins){
         try{
-            
             game.roll(pins);
-            return "You have rolled a pin worth " + pins + " points.";
+            return String.valueOf(pins);
         }
         catch(PinsBelowBoundException e){
             return e.getMessage();

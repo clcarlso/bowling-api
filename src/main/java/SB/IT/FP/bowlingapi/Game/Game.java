@@ -13,7 +13,7 @@ public class Game {
     private static final int maxPointValue = 10;
     private static final int minPointValue = 0;
 
-    public void roll(int pins) throws PinsAboveBoundException, PinsBelowBoundException{
+    public int roll(int pins) throws PinsAboveBoundException, PinsBelowBoundException{
         logger.info("Attempting to roll a pin: " + pins);
         if(pins < minPointValue){
             logger.error("Pins rolled was less than the current games minPointValue. roll: " + pins + " vs minPointValue: " + minPointValue);
@@ -27,6 +27,7 @@ public class Game {
             logger.info("pins added to array of rolls");
             rolls[currentRoll++] = pins;
         }
+        return pins;
     }
 
     public int score(){
