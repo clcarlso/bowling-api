@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import SB.IT.FP.bowlingapi.Exceptions.PinsAboveBoundException;
 import SB.IT.FP.bowlingapi.Exceptions.PinsBelowBoundException;
 import SB.IT.FP.bowlingapi.Game.Game;
+
+import java.util.ArrayList;
+
 import org.apache.logging.log4j.*;
 
 @RestController
@@ -18,8 +21,8 @@ public class GameController {
 
     @GetMapping("/score")
     @CrossOrigin(origins = {"http://localhost:4200"})
-    String getScore(){
-        return "The current score of the game is: " + game.score();
+    ArrayList<Integer> getScore(){
+        return game.returnScore();
     }
 
     @GetMapping("/roll/{pins}")
