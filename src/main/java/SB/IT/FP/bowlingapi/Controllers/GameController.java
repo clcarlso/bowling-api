@@ -40,4 +40,9 @@ public class GameController {
         }
     }
 
+    @GetMapping("/clear")
+    @CrossOrigin(origins = {"http://localhost:4200"})
+    boolean clearScore(){
+        return game.clearScore();
+    }
 }
