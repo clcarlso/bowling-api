@@ -30,7 +30,7 @@ public class GameControllerTest {
     @Test
 	public void controllerRoll() throws Exception {
 		assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/roll/7",
-				String.class)).contains("You have rolled a pin worth 7 points.");
+				String.class)).contains("7");
 	}
 
     @Test
