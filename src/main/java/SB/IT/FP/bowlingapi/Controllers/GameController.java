@@ -10,6 +10,8 @@ import SB.IT.FP.bowlingapi.Exceptions.PinsBelowBoundException;
 import SB.IT.FP.bowlingapi.Game.Game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.logging.log4j.*;
 
@@ -25,11 +27,12 @@ public class GameController {
         return game.returnScore();
     }
 
-    @GetMapping("/roll/{pins}")
+    
+    @GetMapping("/place/{pins}")
     @CrossOrigin(origins = {"http://localhost:4200"})
-    String rollPin(@PathVariable int pins){
+    String placePin(@PathVariable int pins){
         try{
-            game.roll(pins);
+            game.place(pins);
             return String.valueOf(pins);
         }
         catch(PinsBelowBoundException e){
@@ -38,6 +41,18 @@ public class GameController {
         catch(PinsAboveBoundException e){
             return e.getMessage();
         }
+    }
+
+    @GetMapping("/roll")
+    @CrossOrigin(origins = {"http://localhost:4200"})
+    String rollBall(){
+            return String.valueOf(game.roll());
+    }
+
+    @GetMapping("/rollMap")
+    @CrossOrigin(origins = {"http://localhost:4200"})
+    HashMap<Integer, List<Integer>> returnRollMap(){
+        return game.returnRollMap();
     }
 
     @GetMapping("/clear")

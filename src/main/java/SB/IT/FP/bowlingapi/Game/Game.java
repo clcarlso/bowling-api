@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Random;
 
 import org.apache.logging.log4j.*;
 public class Game {
@@ -32,24 +33,40 @@ public class Game {
     private HashMap<Integer, List<Integer>> rollMap = new HashMap<Integer, List<Integer>>();
     private HashMap<Integer, Integer> scoreMap = new HashMap<>();
 
-    public int roll(int pins) throws PinsAboveBoundException, PinsBelowBoundException{
-        logger.info("Attempting to roll a pin: " + pins);
+    public int place(int score) throws PinsAboveBoundException, PinsBelowBoundException{
+        logger.info("Attempting to place a score: " + score);
         
-        if(pins < minPointValue){
-            logger.error("Pins rolled was less than the current games minPointValue. roll: " + pins + " vs minPointValue: " + minPointValue);
-            throw new PinsBelowBoundException("Number of pins rolled are below the bounds. Try again.");
+        if(score < minPointValue){
+            logger.error("Score placed was less than the current games minPointValue. score: " + score + " vs minPointValue: " + minPointValue);
+            throw new PinsBelowBoundException("Score trying to place is below the bounds. Try again.");
         }
-        else if (pins > maxPointValue){
-            logger.error("Pins rolled was more than the current games maxPointValue. roll: " + pins + " vs minPointValue: " + maxPointValue);
-            throw new PinsAboveBoundException("Number of pins rolled are above the bounds. Try again.");
+        else if (score > maxPointValue){
+            logger.error("Score placed was more than the current games maxPointValue. score: " + score + " vs minPointValue: " + maxPointValue);
+            throw new PinsAboveBoundException("Score trying to place is above the bounds. Try again.");
         }
         else{
-            logger.info("pins added to array of rolls");
+            logger.info("Score added to array of rolls");
             //rolls.add(pins);
-            addToRollMap(pins);
+            addToRollMap(score);
         }
+        return score;
+    }
+
+    public int roll(){
+        int currentScoreOfFrame = 0;
+        if (rollMap.containsKey(currentFrame)){
+            List<Integer>rollList = rollMap.get(this.currentFrame);
+            for(int i =0; i< rollList.size(); i++){
+                currentScoreOfFrame = rollList.get(i);
+            }
+        }
+        int maxRollValue = (Game.maxPointValue+1) - currentScoreOfFrame;
+        Random randomGenerator = new Random();
+        int pins = randomGenerator.nextInt(maxRollValue);
+        addToRollMap(pins);
         return pins;
     }
+
     
     private void addPinsToFrameTotal(int frameIndex , int pins){
         int frameScore = this.scoreMap.get(frameIndex);
@@ -233,6 +250,10 @@ public class Game {
 
         return scoresByFrame;
     }
+    public HashMap<Integer, List<Integer>> returnRollMap(){
+        return this.rollMap;
+    }
+    
     public boolean clearScore(){
         
         try{
