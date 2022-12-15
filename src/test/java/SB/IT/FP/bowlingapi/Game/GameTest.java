@@ -19,61 +19,61 @@ public class GameTest  {
         game = new Game();
     }
 
-    private void rollMany(int n, int pins) throws PinsAboveBoundException, PinsBelowBoundException  {
+    private void placeMany(int n, int pins) throws PinsAboveBoundException, PinsBelowBoundException  {
         for(int i =0; i<n; i++){
-            this.game.roll(pins);
+            this.game.place(pins);
         }
     }
 
-    private void rollSpare() throws PinsAboveBoundException, PinsBelowBoundException {
-        game.roll(5);
-        game.roll(5);
+    private void placeSpare() throws PinsAboveBoundException, PinsBelowBoundException {
+        game.place(5);
+        game.place(5);
     }
 
-    private void rollStrike() throws PinsAboveBoundException, PinsBelowBoundException {
-            game.roll(10);
+    private void placeStrike() throws PinsAboveBoundException, PinsBelowBoundException {
+            game.place(10);
     }
 
     @Test
     public void testGutterGame() throws PinsAboveBoundException, PinsBelowBoundException  {
-        rollMany(20, 0);
+        placeMany(20, 0);
         //assertEquals(0,game.score());
     }
 
     @Test
     public void testAllOnes() throws PinsAboveBoundException, PinsBelowBoundException {
-        rollMany(20, 1);
+        placeMany(20, 1);
         //assertEquals(20,game.score());
     }
 
     @Test 
     public void testOneSpare() throws PinsAboveBoundException, PinsBelowBoundException{
-        rollSpare();
-        game.roll(3);
-        rollMany(17, 0);
+        placeSpare();
+        game.place(3);
+        placeMany(17, 0);
         //assertEquals(16, game.score());
     }
 
     @Test 
     public void testOneStrike() throws PinsAboveBoundException, PinsBelowBoundException{
-        rollStrike();
-        game.roll(3);
-        game.roll(4);
-        rollMany(17, 0);
+        placeStrike();
+        game.place(3);
+        game.place(4);
+        placeMany(17, 0);
         //assertEquals(24, game.score());
     }
 
     @Test 
     public void testPerfectGame() throws PinsAboveBoundException, PinsBelowBoundException{
-        rollMany(12, 10);
+        placeMany(12, 10);
         //assertEquals(300, game.score());
     }
 
     @Test 
     public void testAbovePointBoundary() throws PinsBelowBoundException{
-        String PinsExceptionError = "Number of pins rolled are above the bounds. Try again.";
+        String PinsExceptionError = "Number of pins placed are above the bounds. Try again.";
         try {
-            game.roll(999);
+            game.place(999);
         } catch (PinsAboveBoundException e) {
             assertEquals(e.getMessage(),PinsExceptionError);
             //assertThrows
@@ -83,9 +83,9 @@ public class GameTest  {
 
     @Test 
     public void testBelowPointBoundary() throws PinsAboveBoundException{
-        String PinsExceptionError = "Number of pins rolled are below the bounds. Try again.";
+        String PinsExceptionError = "Number of pins placed are below the bounds. Try again.";
         try {
-            game.roll(-1);
+            game.place(-1);
         } catch (PinsBelowBoundException e) {
             assertEquals(e.getMessage(),PinsExceptionError);
         }

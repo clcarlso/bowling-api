@@ -2,6 +2,7 @@ package SB.IT.FP.bowlingapi.Game;
 
 import SB.IT.FP.bowlingapi.Exceptions.PinsAboveBoundException;
 import SB.IT.FP.bowlingapi.Exceptions.PinsBelowBoundException;
+import SB.IT.FP.bowlingapi.model.GameOptions;
 
 import java.io.Console;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.Random;
 
 import org.apache.logging.log4j.*;
 public class Game {
@@ -18,12 +21,14 @@ public class Game {
 
     private static Logger logger = LogManager.getLogger(Game.class.getName());
 
-    private static final int maxPointValue = 10;
-    private static final int minPointValue = 0;
-    private static final int numberOfFrames = 10;
-    private static final int rollsPerFrame = 2;
-    private static final int lastFrameBonusThrow = 1;
-    private static final int strikeBonusRolls = 2;
+    private static int maxPointValue = 10;
+    private static int minPointValue = 0;
+    private static int numberOfFrames = 10;
+    private static int rollsPerFrame = 2;
+    private static int lastFrameBonusThrow = 1;
+    private static int strikeBonusRolls = 2;
+
+    private static GameOptions gameOptions;
 
     private int currentFrame=0;
     
@@ -32,25 +37,50 @@ public class Game {
     private HashMap<Integer, List<Integer>> rollMap = new HashMap<Integer, List<Integer>>();
     private HashMap<Integer, Integer> scoreMap = new HashMap<>();
 
-    public int roll(int pins) throws PinsAboveBoundException, PinsBelowBoundException{
-        logger.info("Attempting to roll a pin: " + pins);
+
+    public GameOptions initializeGameOptions(GameOptions optionsToCreateGame){
+
+        clearScore();
+        Game.gameOptions = new GameOptions(optionsToCreateGame.getPins(), optionsToCreateGame.getFrames(), optionsToCreateGame.getRollsPerFrame(), optionsToCreateGame.getEndFrames(), optionsToCreateGame.getRollsPerEndFrame(), optionsToCreateGame.getMode());
+        return Game.gameOptions;
+    }
+
+
+    //TODO: Custom error when placing pin that equals above bounds
+    public int place(int score) throws PinsAboveBoundException, PinsBelowBoundException{
+        logger.info("Attempting to place a score: " + score);
         
-        if(pins < minPointValue){
-            logger.error("Pins rolled was less than the current games minPointValue. roll: " + pins + " vs minPointValue: " + minPointValue);
-            throw new PinsBelowBoundException("Number of pins rolled are below the bounds. Try again.");
+        if(score < minPointValue){
+            logger.error("Score placed was less than the current games minPointValue. score: " + score + " vs minPointValue: " + minPointValue);
+            throw new PinsBelowBoundException("Score trying to place is below the bounds. Try again.");
         }
-        else if (pins > maxPointValue){
-            logger.error("Pins rolled was more than the current games maxPointValue. roll: " + pins + " vs minPointValue: " + maxPointValue);
-            throw new PinsAboveBoundException("Number of pins rolled are above the bounds. Try again.");
+        else if (score > Game.gameOptions.getPins()){
+            logger.error("Score placed was more than the current games maxPointValue. score: " + score + " vs minPointValue: " + Game.gameOptions.getPins());
+            throw new PinsAboveBoundException("Score trying to place is above the bounds. Try again.");
         }
         else{
-            logger.info("pins added to array of rolls");
+            logger.info("Score added to array of rolls");
             //rolls.add(pins);
-            addToRollMap(pins);
+            addToRollMap(score);
         }
+        return score;
+    }
+
+    public int roll(){
+        int currentScoreOfFrame = 0;
+        if (rollMap.containsKey(currentFrame)){
+            List<Integer>rollList = rollMap.get(this.currentFrame);
+            for(int i =0; i< rollList.size(); i++){
+                currentScoreOfFrame = rollList.get(i);
+            }
+        }
+        int maxRollValue = (Game.gameOptions.getPins()+1) - currentScoreOfFrame;
+        Random randomGenerator = new Random();
+        int pins = randomGenerator.nextInt(maxRollValue);
+        addToRollMap(pins);
         return pins;
     }
-    
+
     private void addPinsToFrameTotal(int frameIndex , int pins){
         int frameScore = this.scoreMap.get(frameIndex);
         int newTotal = frameScore + pins;
@@ -58,7 +88,6 @@ public class Game {
         this.scoreMap.put(frameIndex, newTotal);
        
     }
-
 
     private boolean decrementFromStrikeFlag(int frameIndex){
         int strikeBonusRemaining = this.strikeFlag.get(frameIndex);
@@ -106,7 +135,7 @@ public class Game {
         rollsForCurrentFrame.add(pins);
 
         //fill the remaining frame with empty
-        for( int i =1;i<rollsPerFrame; i++){
+        for( int i =1;i<Game.gameOptions.getRollsPerFrame(); i++){
             rollsForCurrentFrame.add(0);
         }
         return rollsForCurrentFrame;
@@ -134,7 +163,7 @@ public class Game {
         //first roll
         if(!rollMap.containsKey(currentFrame)){
             //first roll + strike
-            if(pins == maxPointValue){
+            if(pins == Game.gameOptions.getPins()){
                 rollsForCurrentFrame = strikeAction(rollsForCurrentFrame,pins);
             }
             //first roll + not strike
@@ -154,7 +183,7 @@ public class Game {
             //add our current throw to the rolls
             rollsForCurrentFrame.add(pins);
             //not first roll + spare
-            if(checkIfSpare(rollsForCurrentFrame, maxPointValue)){
+            if(checkIfSpare(rollsForCurrentFrame, Game.gameOptions.getPins())){
                 this.spareFlag = true;
                 //TODO: set up to fill the remainder if there is still room.
             }
@@ -163,7 +192,7 @@ public class Game {
         rollMap.put(currentFrame, rollsForCurrentFrame);
         
         //if this is the final roll in the frame
-        if (rollsForCurrentFrame.size() >=rollsPerFrame){
+        if (rollsForCurrentFrame.size() >=Game.gameOptions.getRollsPerFrame()){
             //add up the rolls in the frame and store in the score map
             addToScoreMap();
             //move to the next frame
@@ -233,6 +262,11 @@ public class Game {
 
         return scoresByFrame;
     }
+    
+    public HashMap<Integer, List<Integer>> returnRollMap(){
+        return this.rollMap;
+    }
+    
     public boolean clearScore(){
         
         try{
