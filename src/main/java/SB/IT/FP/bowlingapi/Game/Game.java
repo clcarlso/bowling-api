@@ -135,11 +135,21 @@ public class Game {
         rollsForCurrentFrame.add(pins);
 
         //fill the remaining frame with empty
-        for( int i =1;i<Game.gameOptions.getRollsPerFrame(); i++){
+        int amountOfRolls = amountOfRollsBasedOnFrameType();
+        for( int i =1;i<amountOfRolls; i++){
             rollsForCurrentFrame.add(0);
         }
         return rollsForCurrentFrame;
     } 
+
+    private int amountOfRollsBasedOnFrameType(){
+        int nonEndFrames = Game.gameOptions.getFrames() - Game.gameOptions.getEndFrames();
+        
+        if (this.currentFrame >= nonEndFrames){
+            return Game.gameOptions.getRollsPerEndFrame();
+        }
+        else return Game.gameOptions.getRollsPerFrame();
+    }
 
     private boolean checkIfSpare(List<Integer> rollsForCurrentFrame, int maxPointValue){
         int currentFrameSum = 0;
@@ -161,6 +171,10 @@ public class Game {
         
         strikeBackTrack(pins);
         //first roll
+        /*
+         * Last frame will not contain the key yet
+         */
+
         if(!rollMap.containsKey(currentFrame)){
             //first roll + strike
             if(pins == Game.gameOptions.getPins()){
@@ -190,9 +204,11 @@ public class Game {
         }
 
         rollMap.put(currentFrame, rollsForCurrentFrame);
+
         
         //if this is the final roll in the frame
-        if (rollsForCurrentFrame.size() >=Game.gameOptions.getRollsPerFrame()){
+        int amountOfRolls = amountOfRollsBasedOnFrameType();
+        if (rollsForCurrentFrame.size() >=amountOfRolls){
             //add up the rolls in the frame and store in the score map
             addToScoreMap();
             //move to the next frame
